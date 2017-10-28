@@ -93,7 +93,8 @@ print("[INFO] loading and pre-processing image...")
 # sol: save the image to the disk and then re-read it
 from keras.datasets import cifar10
 (X_train, y_train),(X_test, y_test) = cifar10.load_data()
-image = X_test[0]
+test_example = 1
+image = X_test[test_example]
 
 import scipy.misc 
 scipy.misc.imsave("image.jpg", image)
@@ -112,10 +113,36 @@ image = np.expand_dims(image, axis=0)
 image = preprocess(image)
 
 
+##################################################
+# --- Classify image --- 
+##################################################
+# classify the image
+print("[INFO] classifying image with '{}'...".format(args["model"]))
+preds = model.predict(image)
+P = imagenet_utils.decode_predictions(preds)
+ 
+# loop over the predictions and display the rank-5 predictions +
+# probabilities to our terminal
+for (i, (imagenetID, label, prob)) in enumerate(P[0]):
+	print("{}. {}: {:.2f}%".format(i + 1, label, prob * 100))
 
-
-
-
-
+CIFAR_LABELS = {
+	0: "airplane",
+	1: "automobile",
+	2: "bird",
+	3: "cat", 
+	4: "deer", 
+	5: "dog", 
+	6: "frog", 
+	7: "horse", 
+	8: "ship", 
+	9: "truck", 	
+}
+value = y_test[test_example].astype(int)
+print(type (value))
+# print (type(y_test[test_example].astype(int)))
+# image_label = CIFAR_LABELS[y_test[test_example].astype(int)]
+image_label = CIFAR_LABELS[8]
+print ("Label: {}".format(image_label))
 
 
